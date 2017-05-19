@@ -1,0 +1,898 @@
+
+import java.awt.AWTException;
+import java.awt.BasicStroke;
+import java.awt.Button;
+import java.awt.CardLayout;
+import java.awt.Color;
+import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.HeadlessException;
+import java.awt.Rectangle;
+import java.awt.Robot;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Set;
+
+import javax.imageio.ImageIO;
+
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.sl.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
+
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ChangeEvent;
+import javax.swing.JPasswordField;
+import java.awt.Label;
+import javax.swing.JRadioButton;
+import java.awt.FlowLayout;
+import javax.swing.JEditorPane;
+import javax.swing.JTextPane;
+import javax.swing.JTextArea;
+import javax.swing.border.LineBorder;
+public class version2 {
+	private JFrame frmFeedbackAndAssessment;
+	private JTextField Username_textfield;
+	private JPasswordField Password_textfield;
+	private JTextField Newname_textfield;
+	private JTextField Newusername_textfield;
+	private JPasswordField Newpassword_textfield;
+	boolean button = false;
+	boolean energy = false;
+	boolean alarm = false;
+	boolean oil = false;
+	int Timer=0;
+	BufferedImage screencapture = null;
+	private JTextField txtFeedbackOnApplication;
+	final JTextPane Attention_text = new JTextPane();
+	final JLabel Progress_label = new JLabel("Progress");
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					version2 window = new version2();
+					window.frmFeedbackAndAssessment.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+	/**
+	 * Create the application.
+	 */
+	public version2() throws IOException {
+		initialize();
+	}
+	/**
+	 * Initialize the contents of the frame.
+	 * @throws IOException 
+	 */
+	private void initialize() throws IOException {
+	
+		frmFeedbackAndAssessment = new JFrame();
+		frmFeedbackAndAssessment.setTitle("Feedback and Assessment");
+		frmFeedbackAndAssessment.setBounds(100, 100, 760, 540);
+		frmFeedbackAndAssessment.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frmFeedbackAndAssessment.getContentPane().setLayout(new CardLayout(0, 0));
+// Make a panel where you can switch between tabs		
+		final JTabbedPane Tabb = new JTabbedPane(JTabbedPane.TOP);
+		Tabb.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent arg0) {
+			}
+		});
+		Tabb.setBackground(new Color(255, 250, 205));
+		Tabb.setFont(new Font("Microsoft New Tai Lue", Font.PLAIN, 11));
+		frmFeedbackAndAssessment.getContentPane().add(Tabb, "name_2941646179768");
+		Tabb.setVisible(false);	
+//Create the Newuser_panel		
+		final JPanel Newuser_panel = new JPanel();
+		Newuser_panel.setBackground(new Color(255, 255, 204));
+		frmFeedbackAndAssessment.getContentPane().add(Newuser_panel, "name_1802785763142983");
+		Newuser_panel.setLayout(null);
+		Newuser_panel.setVisible(false);
+// Create the Login panel
+		final JPanel Login_panel = new JPanel();
+		Login_panel.setForeground(new Color(255, 255, 255));
+		Login_panel.setBackground(new Color(255, 255, 204));
+		frmFeedbackAndAssessment.getContentPane().add(Login_panel, "name_1802756030141908");
+		Login_panel.setLayout(null);
+		Login_panel.setVisible(true);
+//Create the Newuser_button - when you click it you will go to Newuser_panel
+		Button Newuser_button = new Button("Create an account");
+		Newuser_button.setForeground(new Color(0, 0, 0));
+		Newuser_button.setBackground(new Color(255, 204, 102));
+		Newuser_button.setFont(new Font("Microsoft New Tai Lue", Font.PLAIN, 13));
+		Newuser_button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			Login_panel.setVisible(false);
+			Newuser_panel.setVisible(true);
+			}
+		});
+		Newuser_button.setBounds(325, 300, 135, 29);
+		Login_panel.add(Newuser_button);
+// Login_button- Controls username and password and sends you to the main screen or tells you to try again.
+		Button Login_button = new Button("Login");
+		Login_button.setBackground(new Color(255, 204, 102));
+		Login_button.setForeground(new Color(0, 0, 0));
+		Login_button.setFont(new Font("Microsoft New Tai Lue", Font.PLAIN, 13));
+		Login_button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			String Username = Username_textfield.getText();
+			String Password = Password_textfield.getText();
+				try{
+				ExcelSearch Excelsearch = new ExcelSearch();
+				Excelsearch.Login();
+				String findpassword = null;
+				String findusername = null;
+				int rowCount = 0;
+				rowCount=Excelsearch.sheet.getLastRowNum();
+			// Looks if the username is in the login file
+				 int  lastrow = Excelsearch.sheet.getPhysicalNumberOfRows();
+		          lastrow = lastrow-1;
+				for (int row=0; row<=lastrow; row++)	{
+					findusername = Excelsearch.sheet.getRow(row).getCell(0).getStringCellValue();
+					// Looks if password is with that username. if that is true, the for loop will be broken
+					if (Username.equals(findusername)){
+						findpassword = Excelsearch.sheet.getRow(row).getCell(1).getStringCellValue();
+						break;
+					}
+					else{
+					}
+				}
+				// Check if the username and password are found at the end, if not they filled in the wrong username or password
+				if(Username.equals(findusername)){
+					if (Password.equals(findpassword)){
+						JOptionPane.showMessageDialog(frmFeedbackAndAssessment, "You are succesfully logged in");
+						Login_panel.setVisible(false);
+						Tabb.setVisible(true);
+						// the username and password were in the Login file. Go to the main screen.
+					}
+					else{
+						JOptionPane.showMessageDialog(frmFeedbackAndAssessment, "You typed the wrong password, try again");
+					}
+				}
+				else{
+					JOptionPane.showMessageDialog(frmFeedbackAndAssessment, "You typed the wrong username, try again");
+				}
+				Excelsearch.workbook.close();
+				}catch (IOException a){
+						a.printStackTrace();
+				}	
+			}
+	});
+		Login_button.setBounds(325, 200, 88, 29);
+		Login_panel.add(Login_button);
+		// if the password is forgotten, the supervisor knows how to get into the login.xls file to look for it		
+		Button Forgetpassword_button = new Button("Forgot username/password?");
+		Forgetpassword_button.setForeground(new Color(0, 0, 0));
+		Forgetpassword_button.setBackground(new Color(255, 204, 102));
+		Forgetpassword_button.setFont(new Font("Microsoft New Tai Lue", Font.PLAIN, 13));
+		Forgetpassword_button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JOptionPane.showMessageDialog(frmFeedbackAndAssessment, "Ask your supervisor for help");
+			}
+		});
+		Forgetpassword_button.setBounds(325, 340, 178, 29);
+		Login_panel.add(Forgetpassword_button);
+				
+		// Exitnewuser_button will bring you back to the login page
+		Button Exitnewuser_button = new Button("Back");
+		Exitnewuser_button.setFont(new Font("Microsoft Tai Le", Font.PLAIN, 13));
+		Exitnewuser_button.setForeground(new Color(0, 0, 0));
+		Exitnewuser_button.setBackground(new Color(255, 204, 102));
+		Exitnewuser_button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Login_panel.setVisible(true);
+				Newuser_panel.setVisible(false);
+			}
+		});
+		Exitnewuser_button.setBounds(0, 470, 69, 31);
+		Newuser_panel.add(Exitnewuser_button);
+
+		// Savenewuser_button creates the new user after checking if the username is never used and if it is longer than 4 characters
+		Button Savenewuser_button = new Button("Save");
+		Savenewuser_button.setBackground(new Color(255, 204, 102));
+		Savenewuser_button.setForeground(new Color(0, 0, 0));
+		Savenewuser_button.setFont(new Font("Microsoft New Tai Lue", Font.PLAIN, 13));
+		Savenewuser_button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String Username = Newusername_textfield.getText();
+				String Password = Newpassword_textfield.getText();
+				String Name = Newname_textfield.getText();
+				// Open the login file to look if there is not another user with the same name
+				try {
+		           ExcelSearch Excelsearch = new ExcelSearch();
+		           Excelsearch.Login();
+		            String findusername1 = null;
+		            int  lastrow = Excelsearch.sheet.getPhysicalNumberOfRows();
+		            lastrow = lastrow-1;
+		            for (int row=0; row<lastrow; row++){
+		            	findusername1=null;
+		            	String findusername = null;
+		            	findusername = Excelsearch.sheet.getRow(row).getCell(0).getStringCellValue();
+		                  	if (Username.equals(findusername)){
+		            		JOptionPane.showMessageDialog(frmFeedbackAndAssessment, "This username is already used");
+		            		Newuser_panel.setVisible(true);
+		            		findusername1 = findusername;
+		            		break;
+		                	}
+		            	else{
+		            		// The username is not in use, so it is given a number so it can be used in the next line.
+		            		findusername1 = "test";
+		            	}
+		                  Excelsearch.workbook.close();
+		            } 
+		            if (findusername1.equals("test")&& Username.length()> 4 && Password.length() > 4 && Name.length()> 0){
+		            	Login_panel.setVisible(true);
+		            	Newuser_panel.setVisible(false);
+		            	Excelsearch();
+		            	Excelsearch.Login();
+		               //	FileInputStream file1 = new FileInputStream(new File("Login.xls"));
+		               // HSSFWorkbook workbook1 = new HSSFWorkbook(file1);
+		              //  HSSFSheet sheet1;
+		               // sheet1 = workbook1.getSheet("Sheet1");
+		               	Cell cellusername = null;
+		            	Cell cellpassword = null;
+		            	Cell cellname = null;
+		               	Row row = Excelsearch.sheet.createRow(lastrow);
+		            	cellusername = row.createCell(0);
+		            	cellusername.setCellValue(Username);
+		            	cellpassword = row.createCell(1);
+		            	cellpassword.setCellValue(Password);
+		            	cellname = row.createCell(2);
+		            	cellname.setCellValue(Name);
+		                Excelsearch.iFile.close();
+		            	FileOutputStream outStream = new FileOutputStream(new File("Login.xls"));
+		                Excelsearch.workbook.write(outStream);
+		                outStream.close();
+		                Excelsearch.workbook.close();
+		               	JOptionPane.showMessageDialog(frmFeedbackAndAssessment, "Now you can login");
+		            }
+		            else{}
+					}catch (IOException a){
+					a.printStackTrace();
+		        } 
+			}
+		});   	  
+		Savenewuser_button.setBounds(325, 200, 96, 31);
+		Newuser_panel.add(Savenewuser_button);
+					
+// In tabb there are different panels: mainscreen, progress and simulation
+// Mainscreen_panel
+		final JPanel Mainscreen_panel = new JPanel();
+		Tabb.addTab("Main screen", null, Mainscreen_panel, null);
+		Mainscreen_panel.setForeground(Color.BLUE);
+		Mainscreen_panel.setBackground(new Color(255, 255, 204));
+		Mainscreen_panel.setVisible(false);
+		// Logoutmainscreen_button logs the user out and goes toe login screen
+		Button Logoutmainscreen_button = new Button("Logout");
+		Logoutmainscreen_button.setForeground(new Color(0, 0, 0));
+		Logoutmainscreen_button.setBounds(250, 440, 89, 28);
+		Logoutmainscreen_button.setBackground(new Color(255, 204, 102));
+		Logoutmainscreen_button.setFont(new Font("Microsoft New Tai Lue", Font.PLAIN, 13));
+		Logoutmainscreen_button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Tabb.setVisible(false);
+				Login_panel.setVisible(true);
+			}
+		});
+		Mainscreen_panel.setLayout(null);
+		Mainscreen_panel.add(Logoutmainscreen_button);
+// Progress_panel
+		final JPanel Progress_panel = new JPanel();
+		Progress_panel.setBackground(new Color(255, 255, 204));
+		Progress_panel.setVisible(false);		
+		button = false ;
+		JPanel Feedbackapp_panel = new JPanel();
+		Feedbackapp_panel.setBorder(null);
+		Feedbackapp_panel.setBounds(757, 0, 160, 471);
+		Feedbackapp_panel.setVisible(false);
+		Progress_panel.setLayout(null);
+		Feedbackapp_panel.setBackground(new Color(255, 255, 204));
+		Progress_panel.add(Feedbackapp_panel);
+	// Save the progress 
+		Button Saveprogress_button = new Button("Save progress");
+		Saveprogress_button.setBounds(325, 440, 122, 28);
+		Saveprogress_button.setBackground(new Color(255, 204, 102));
+		Saveprogress_button.setFont(new Font("Microsoft New Tai Lue", Font.PLAIN, 13));
+		Saveprogress_button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				 // capture the whole screen
+				java.util.Date date = Calendar.getInstance().getTime();
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd.hhmm");
+			    frmFeedbackAndAssessment.setExtendedState(JFrame.MAXIMIZED_BOTH);
+			    int reply= JOptionPane.showConfirmDialog(null, "Do you first want to give feedback about the application","",JOptionPane.YES_NO_OPTION);
+			    if (reply==JOptionPane.YES_OPTION){
+			    	Feedbackapp_panel.setVisible(true);
+			    }
+			    else{
+			    	try {
+			    		screencapture = new Robot().createScreenCapture(
+						new Rectangle(Toolkit.getDefaultToolkit().getScreenSize()) );
+			    	} catch (HeadlessException e) {
+			    		// TODO Auto-generated catch block
+			    		e.printStackTrace();
+			    	}  
+			    	catch (AWTException e) {
+			    		// TODO Auto-generated catch block
+			    		e.printStackTrace();
+			    	}
+			    	// Save as JPEG
+			    	File file = new File("Assignment"+sdf.format(date)+".jpg");
+			    	try {
+						ImageIO.write(screencapture, "jpg", file);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+			    	JOptionPane.showMessageDialog(null, "Look in the folder where you opened this program, send file: AssignmentYYYY.MM.DD.HHMM to your supervisor");
+			    }    
+			}
+		});
+		Progress_panel.add(Saveprogress_button);
+		
+		JProgressBar progressBar = new JProgressBar();
+		progressBar.setBounds(187, 366, 81, 94);
+		progressBar.setValue(100);
+		progressBar.setForeground(Color.DARK_GRAY);
+		progressBar.setBackground(Color.DARK_GRAY);
+		progressBar.setOrientation(SwingConstants.VERTICAL);
+		Label Percentagetotal_label = new Label("");
+		Percentagetotal_label.setBounds(274, 438, 29, 22);
+		Label Percentageenergy_label = new Label();
+		Percentageenergy_label.setBounds(274, 149, 29, 22);
+		Label Percentagealarms_label = new Label("");
+		Percentagealarms_label.setBounds(274, 307, 29, 22);
+		Label Percentageoil_label = new Label("");
+		Percentageoil_label.setBounds(274, 228, 29, 22);
+		final JLabel Hintoil_label = new JLabel("");
+		Hintoil_label.setVisible(false);
+		Hintoil_label.setForeground(Color.RED);
+		Hintoil_label.setBounds(20, 245, 641, 24);	
+		final JLabel Hintalarms_label = new JLabel("");
+		Hintalarms_label.setVisible(false);
+		Hintalarms_label.setForeground(Color.RED);
+		Hintalarms_label.setBounds(20, 331, 641, 24);	
+		final JLabel Hintenergy_label = new JLabel("");
+		Hintenergy_label.setVisible(false);
+		Hintenergy_label.setForeground(Color.RED);
+		Hintenergy_label.setBounds(20, 166, 679, 24);
+		
+		JRadioButton Hintenergy_button = new JRadioButton("Hint");
+		Hintenergy_button.setBackground(new Color(255, 255, 204));
+		Hintenergy_button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if (Hintenergy_button.isSelected()){
+					Hintenergy_label.setVisible(true);
+				}
+				else {Hintenergy_label.setVisible(false);}
+			}
+		});
+		Hintenergy_button.setFont(new Font("Microsoft New Tai Lue", Font.PLAIN, 13));
+		Hintenergy_button.setBounds(20, 144, 61, 27);
+// if the user wants a hint, they click on the button an a hint will come		
+		JRadioButton Hintoil_button = new JRadioButton("Hint");
+		Hintoil_button.setBackground(new Color(255, 255, 204));
+		Hintoil_button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if (Hintoil_button.isSelected()){
+					Hintoil_label.setVisible(true);
+				}
+				else {Hintoil_label.setVisible(false);}
+			}
+		});
+		Hintoil_button.setFont(new Font("Microsoft New Tai Lue", Font.PLAIN, 13));
+		Hintoil_button.setBounds(20, 223, 61, 27);
+		
+		JRadioButton Hintalarms_button = new JRadioButton("Hint");
+		Hintalarms_button.setBackground(new Color(255, 255, 204));
+		Hintalarms_button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if (Hintalarms_button.isSelected()){
+					Hintalarms_label.setVisible(true);
+				}
+				else {Hintalarms_label.setVisible(false);}
+			}
+		});
+		Hintalarms_button.setFont(new Font("Microsoft New Tai Lue", Font.PLAIN, 13));
+		Hintalarms_button.setBounds(20, 302, 61, 27);
+// Simulation_panel shows real time feedback
+		
+		ImagePanel Green_energy = new ImagePanel();
+		Green_energy.setBounds(207, 119, 61, 52);
+		Green_energy.setName("green.png");
+		Green_energy.setVisible(true);
+		ImagePanel Green_oil = new ImagePanel();
+		Green_oil.setBounds(207, 198, 61, 52);
+		Green_oil.setName("green.png");
+		Green_oil.setVisible(true);
+		ImagePanel Green_alarm = new ImagePanel();
+		Green_alarm.setBounds(207, 277, 61, 52);
+		Green_alarm.setName("green.png");
+		Green_alarm.setVisible(true);
+
+		ImagePanel Orange_energy = new ImagePanel();
+		Orange_energy.setBounds(207, 119, 61, 52);
+		Orange_energy.setName("yellow.png");
+		Orange_energy.setVisible(false);
+		ImagePanel Orange_oil = new ImagePanel();
+		Orange_oil.setBounds(207, 198, 61, 52);
+		Orange_oil.setName("yellow.png");
+		Orange_oil.setVisible(false);
+		ImagePanel Orange_alarm = new ImagePanel();
+		Orange_alarm.setBounds(207, 277, 61, 52);
+		Orange_alarm.setName("yellow.png");
+		Orange_alarm.setVisible(false);
+
+		ImagePanel Red_energy = new ImagePanel();
+		Red_energy.setBounds(207, 119, 61, 52);
+		Red_energy.setName("red.png");
+		Red_energy.setVisible(false);
+		ImagePanel Red_oil = new ImagePanel();
+		Red_oil.setBounds(207, 198, 61, 52);
+		Red_oil.setName("red.png");
+		Red_oil.setVisible(false);
+		ImagePanel Red_alarm = new ImagePanel();
+		Red_alarm.setBounds(207, 277, 61, 52);
+		Red_alarm.setName("red.png");
+		Red_alarm.setVisible(false);
+		
+		final JPanel Simulation_panel_1 = new JPanel();
+		Simulation_panel_1.setBackground(new Color(255, 255, 204));
+		Tabb.addTab("Simulation", null, Simulation_panel_1, null);
+		Tabb.setBackgroundAt(1, new Color(255, 255, 204));
+		Thread threadRealtime= new Thread (new Runnable(){
+			@Override
+			public void run() {
+			
+				// TODO Auto-generated method stub
+				try{
+					int Totalscore1=0;
+					int Activealarms1=0;
+					int Oilproduction1=0;
+					int Energyconsumption1=0;
+					while (Timer<600 ){
+						ExcelSearch Excelsearch = new ExcelSearch();
+						Excelsearch.Information();
+						Excelsearch.Save();
+												
+						int Totalscore = Excelsearch.c = (int) Excelsearch.infoSheet.getRow(1).getCell(3).getNumericCellValue();
+						int Activealarms =  Excelsearch.c = (int) Excelsearch.infoSheet.getRow(1).getCell(0).getNumericCellValue();
+						int Oilproduction = Excelsearch.c = (int) Excelsearch.infoSheet.getRow(1).getCell(1).getNumericCellValue();
+						int Energyconsumption = Excelsearch.c = (int) Excelsearch.infoSheet.getRow(1).getCell(2).getNumericCellValue();
+						
+						Percentagetotal_label.setText(String.valueOf(Totalscore + "%"));
+						Percentageenergy_label.setText(String.valueOf(Energyconsumption+ "%"));
+						Percentageoil_label.setText(String.valueOf(Oilproduction+ "%"));
+						Percentagealarms_label.setText(String.valueOf(Activealarms+ "%"));
+	// shows a picture if a student is doing a good job or needs to work on a part of the assignment					
+						if (Activealarms>=80){
+							Green_alarm.setVisible(true);
+							Orange_alarm.setVisible(false);
+							Red_alarm.setVisible(false);
+							Hintalarms_label.setText("You have no active alarms");
+							Activealarms1=Activealarms;
+						}
+						else if (Activealarms>=40 && Activealarms<80){
+							Green_alarm.setVisible(false);
+							Orange_alarm.setVisible(true);
+							Red_alarm.setVisible(false);
+							Hintalarms_label.setText("There are some unacknowledged alarms, check your active alarms.");
+							Activealarms1=Activealarms;
+						}
+						else{
+							Green_alarm.setVisible(false);
+							Orange_alarm.setVisible(false);
+							Red_alarm.setVisible(true);
+							Hintalarms_label.setText("There are a lot of unacknowledged alarms, check your active alarms.");
+							Activealarms1=Activealarms;
+						}
+						if ( Oilproduction>=80){
+							Green_oil.setVisible(true);
+							Orange_oil.setVisible(false);
+							Red_oil.setVisible(false);
+							Hintoil_label.setText("Your oil production is very good");
+							Oilproduction1=Oilproduction;
+						}
+						else if ( Oilproduction>=40 && Oilproduction<80){
+							Green_oil.setVisible(false);
+							Orange_oil.setVisible(true);
+							Red_oil.setVisible(false);
+							Hintoil_label.setText("The oil production is low, check any equipment related to oil production.");
+							Oilproduction1=Oilproduction;
+						}
+						else{	
+							Green_oil.setVisible(false);
+							Orange_oil.setVisible(false);
+							Red_oil.setVisible(true);
+							Hintoil_label.setText("The oil production is very low, check any equipment related to oil production");
+							Oilproduction1=Oilproduction;
+						}
+						if (Energyconsumption>=80){
+							Energyconsumption1=Energyconsumption;
+							Green_energy.setVisible(true);
+							Orange_energy.setVisible(false);
+							Red_energy.setVisible(false);
+							Hintenergy_label.setText("The energy consumption is very low, good job.");
+							
+						}
+						else if (Energyconsumption>=40 && Energyconsumption <80){
+							//canvasalarm.setBackground(Color.RED);
+							Energyconsumption1=Energyconsumption;
+							Green_energy.setVisible(false);
+							Orange_energy.setVisible(true);
+							Red_energy.setVisible(false);
+							Hintenergy_label.setText("The plant is using more energy than it should, check any equipment related to energy.");
+						}
+						else{
+							Green_energy.setVisible(false);
+							Orange_energy.setVisible(false);
+							Red_energy.setVisible(true);
+							Hintenergy_label.setText("The plant is consuming an extreme amount of energy, check any equipment related to energy.");
+						}
+						if (Totalscore>=80){
+							progressBar.setValue(Totalscore);
+							Totalscore1=Totalscore;
+							progressBar.setForeground(Color.GREEN);
+						}
+						else if (Totalscore<=40){
+							progressBar.setValue(Totalscore);
+							Totalscore1=Totalscore;
+							progressBar.setForeground(Color.RED);
+						}
+						else{
+							progressBar.setForeground(Color.ORANGE);
+							progressBar.setValue(Totalscore);
+							Totalscore1=Totalscore;
+						}
+						Timer++;
+				          
+			            	FileOutputStream outStream = new FileOutputStream(new File("Information1.xls"));
+			                Excelsearch.infoWB.write(outStream);
+			                outStream.close();
+			                Excelsearch.infoWB.close();
+			               
+						try {
+							Thread.sleep(1000);  
+					
+						} catch(InterruptedException ex) {
+							Thread.currentThread().interrupt();
+						}	
+		
+					} 
+					JOptionPane.showMessageDialog(frmFeedbackAndAssessment, "Go to the progress tabb to save your assignment ");
+				}catch (IOException a){
+					a.printStackTrace();
+				} 
+			}
+		});	
+		JPanel Graph_panel = new JPanel();
+		Graph_panel.setBounds(0, 0, 736, 440);
+		Graph_panel.setBackground(new Color(255, 255, 204));
+		Progress_panel.add(Graph_panel);
+		Graph_panel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		Graph_panel.setName("Graph");
+		Graph_panel.setVisible(false);
+		
+		
+		
+		//Startsimulation_button Start the assignment and gives real time feedback
+		Button Startsimulation_button = new Button("Start feedback and assessment");
+		Startsimulation_button.setBounds(20, 60, 218, 28);
+		Startsimulation_button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Startsimulation_button.setVisible(false);
+				Attention_text.setVisible(false);
+				Progress_label.setVisible(false);
+				threadRealtime.start();
+				Graph_panel.setVisible(true);
+				Graph chart = new Graph();
+				chart.running(Graph_panel);
+				chart.start();
+				chart.setLineColor(0, Color.RED);
+				chart.setLineColor(1, Color.BLUE);
+				chart.setLineColor(2, Color.CYAN);
+				chart.setLineColor(3, Color.MAGENTA);
+				chart.setLineStroke(3);
+			}
+		});
+		Simulation_panel_1.setLayout(null);
+		Startsimulation_button.setFont(new Font("Microsoft New Tai Lue", Font.PLAIN, 13));
+		Startsimulation_button.setBackground(new Color(255, 204, 102));
+		Simulation_panel_1.add(Startsimulation_button);
+		Simulation_panel_1.add(progressBar);
+		Simulation_panel_1.add(Percentagetotal_label);
+		Simulation_panel_1.add(Percentageenergy_label);
+		Simulation_panel_1.add(Percentageoil_label);	
+		Simulation_panel_1.add(Percentagealarms_label);
+		Simulation_panel_1.add(Hintenergy_button);
+		Simulation_panel_1.add(Hintoil_button);
+		Simulation_panel_1.add(Hintalarms_button);
+		Simulation_panel_1.add(Hintoil_label);
+		Simulation_panel_1.add(Hintalarms_label);
+		Simulation_panel_1.add(Hintenergy_label);
+		Simulation_panel_1.add(Green_energy);
+		Simulation_panel_1.add(Green_oil);
+		Simulation_panel_1.add(Green_alarm);
+		Simulation_panel_1.add(Orange_energy);
+		Simulation_panel_1.add(Orange_oil);
+		Simulation_panel_1.add(Orange_alarm);
+		Simulation_panel_1.add(Red_energy);
+		Simulation_panel_1.add(Red_oil);
+		Simulation_panel_1.add(Red_alarm);
+		
+	// Add different tabs in the tabb
+		Tabb.addTab("Progress", null, Progress_panel, null);
+		Feedbackapp_panel.setLayout(null);
+				
+		JRadioButton rdbtnNewRadioButton = new JRadioButton("Good");
+		rdbtnNewRadioButton.setBackground(new Color(255, 255, 204));
+		rdbtnNewRadioButton.setBounds(3, 101, 109, 23);
+		Feedbackapp_panel.add(rdbtnNewRadioButton);
+		
+		JRadioButton rdbtnOkay = new JRadioButton("Okay");
+		rdbtnOkay.setBackground(new Color(255, 255, 204));
+		rdbtnOkay.setBounds(3, 127, 109, 23);
+		Feedbackapp_panel.add(rdbtnOkay);
+		
+		JRadioButton rdbtnBad = new JRadioButton("Bad");
+		rdbtnBad.setBackground(new Color(255, 255, 204));
+		rdbtnBad.setBounds(3, 153, 109, 23);
+		Feedbackapp_panel.add(rdbtnBad);
+		Button Finishfeedback_button = new Button("Finished");
+		Finishfeedback_button.setFont(new Font("Microsoft Tai Le", Font.PLAIN, 13));
+		Finishfeedback_button.setBackground(new Color(255, 204, 102));
+		Finishfeedback_button.setBounds(36, 440, 89, 28);
+		Feedbackapp_panel.add(Finishfeedback_button);
+		
+		JTextPane txtpnWhatIsYour = new JTextPane();
+		txtpnWhatIsYour.setBackground(new Color(255, 255, 204));
+		txtpnWhatIsYour.setText("What is your first impression of the application?");
+		txtpnWhatIsYour.setBounds(13, 48, 109, 54);
+		Feedbackapp_panel.add(txtpnWhatIsYour);
+		
+		JTextArea textArea = new JTextArea();
+		textArea.setBorder(new LineBorder(new Color(0, 0, 0)));
+		textArea.setBounds(3, 304, 154, 117);
+		Feedbackapp_panel.add(textArea);
+		
+		txtFeedbackOnApplication = new JTextField();
+		txtFeedbackOnApplication.setBorder(null);
+		txtFeedbackOnApplication.setBackground(new Color(255, 255, 204));
+		txtFeedbackOnApplication.setFont(new Font("Tahoma", Font.BOLD, 11));
+		txtFeedbackOnApplication.setText("Feedback on application");
+		txtFeedbackOnApplication.setBounds(3, 14, 154, 23);
+		Feedbackapp_panel.add(txtFeedbackOnApplication);
+		txtFeedbackOnApplication.setColumns(10);
+		
+		JLabel lblCommentary = new JLabel("Explanation:");
+		lblCommentary.setBounds(18, 280, 94, 14);
+		Feedbackapp_panel.add(lblCommentary);
+		
+		JTextPane txtpnWasItEasy = new JTextPane();
+		txtpnWasItEasy.setText("Was it easy to use the application?");
+		txtpnWasItEasy.setBackground(new Color(255, 255, 204));
+		txtpnWasItEasy.setBounds(13, 183, 109, 40);
+		Feedbackapp_panel.add(txtpnWasItEasy);
+		
+		JRadioButton rdbtnYes = new JRadioButton("Yes");
+		rdbtnYes.setBackground(new Color(255, 255, 204));
+		rdbtnYes.setBounds(3, 224, 109, 23);
+		Feedbackapp_panel.add(rdbtnYes);
+		
+		JRadioButton rdbtnNo = new JRadioButton("No");
+		rdbtnNo.setBackground(new Color(255, 255, 204));
+		rdbtnNo.setBounds(3, 250, 109, 23);
+		Feedbackapp_panel.add(rdbtnNo);
+		Finishfeedback_button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				java.util.Date date = Calendar.getInstance().getTime();
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd.hhmm");
+				 try {
+					screencapture = new Robot().createScreenCapture(
+					new Rectangle(Toolkit.getDefaultToolkit().getScreenSize()) );
+				} catch (HeadlessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (AWTException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				    // Save as JPEG
+				   File file = new File("Assignment"+sdf.format(date)+".jpg");
+				try {
+					ImageIO.write(screencapture, "jpg", file);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				JOptionPane.showMessageDialog(null, "Look in the folder where you opened this program, send this JPG to your supervisor");
+				Feedbackapp_panel.setVisible(false);
+			}
+		});
+	
+		Attention_text.setBackground(new Color(255, 255, 204));
+		Attention_text.setForeground(new Color(0, 0, 0));
+		Attention_text.setFont(new Font("Tahoma", Font.BOLD, 11));
+		Attention_text.setBounds(20, 60, 496, 20);
+		Progress_panel.add(Attention_text);
+		Attention_text.setText("Start the feedback and assessment in the simulation tabb, before you see progress");
+		Attention_text.setVisible(true);
+		
+		Progress_label.setHorizontalAlignment(SwingConstants.LEFT);
+		Progress_label.setFont(new Font("Microsoft New Tai Lue", Font.PLAIN, 25));
+		Progress_label.setBackground(Color.RED);
+		Progress_label.setBounds(20, 20, 176, 35);
+		Progress_panel.add(Progress_label);
+		Tabb.setBackgroundAt(2, new Color(255, 255, 204));
+		Progress_label.setVisible(true);
+		
+		
+		JLabel lblNewLabel = new JLabel("Simulation tab: Start your feedback and assessment, after you started your assignment in K-Spice.");
+		lblNewLabel.setBounds(20, 146, 622, 37);
+		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		Mainscreen_panel.add(lblNewLabel);
+		
+		JLabel lblNewLabel_1 = new JLabel("Progress tab: After you finished your assignment, you can see and save your results here.");
+		lblNewLabel_1.setBounds(20, 194, 568, 25);
+		lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		Mainscreen_panel.add(lblNewLabel_1);
+		
+		JLabel lblMainScreen = new JLabel("Main Screen");
+		lblMainScreen.setBounds(20, 20, 176, 35);
+		lblMainScreen.setBackground(new Color(255, 0, 0));
+		lblMainScreen.setHorizontalAlignment(SwingConstants.LEFT);
+		lblMainScreen.setFont(new Font("Microsoft New Tai Lue", Font.PLAIN, 25));
+		Mainscreen_panel.add(lblMainScreen);
+		
+		JLabel dtrpnInHere = new JLabel();
+		dtrpnInHere.setBackground(new Color(255, 255, 204));
+		dtrpnInHere.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		dtrpnInHere.setText("This application is used in combination with K-Spice. ");
+		dtrpnInHere.setBounds(20, 64, 622, 16);
+		Mainscreen_panel.add(dtrpnInHere);
+		
+		JLabel lblToGiveYou = new JLabel();
+		lblToGiveYou.setText("It will give you feedback and assessment during your assignment in K-Spice");
+		lblToGiveYou.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		lblToGiveYou.setBackground(new Color(255, 255, 204));
+		lblToGiveYou.setBounds(20, 84, 622, 16);
+		Mainscreen_panel.add(lblToGiveYou);
+		
+		JLabel Totalscore_label = new JLabel("Total Score");
+		Totalscore_label.setBounds(20, 446, 131, 14);
+		Totalscore_label.setFont(new Font("Microsoft New Tai Lue", Font.PLAIN, 13));
+		Simulation_panel_1.add(Totalscore_label);
+		
+		JLabel lblSimulation = new JLabel("Simulation");
+		lblSimulation.setBounds(20, 20, 172, 35);
+		lblSimulation.setHorizontalAlignment(SwingConstants.LEFT);
+		lblSimulation.setFont(new Font("Microsoft New Tai Lue", Font.PLAIN, 25));
+		Simulation_panel_1.add(lblSimulation);
+		
+		JLabel lblOptimalEnergyConsumption = new JLabel("Optimal Energy Consumption");
+		lblOptimalEnergyConsumption.setBounds(20, 113, 183, 42);
+		lblOptimalEnergyConsumption.setFont(new Font("Microsoft New Tai Lue", Font.BOLD, 13));
+		Simulation_panel_1.add(lblOptimalEnergyConsumption);
+		
+		JLabel lblOilProduction = new JLabel("Oil Production");
+		lblOilProduction.setBounds(20, 194, 178, 42);
+		lblOilProduction.setFont(new Font("Microsoft New Tai Lue", Font.BOLD, 13));
+		Simulation_panel_1.add(lblOilProduction);
+		
+		JLabel lblAknowledgedAlarms = new JLabel("Acknowledged Alarms");
+		lblAknowledgedAlarms.setBounds(20, 268, 178, 42);
+		lblAknowledgedAlarms.setFont(new Font("Microsoft New Tai Lue", Font.BOLD, 13));
+		Simulation_panel_1.add(lblAknowledgedAlarms);
+		
+		JLabel Username_label = new JLabel("Username");
+		Username_label.setFont(new Font("Microsoft New Tai Lue", Font.BOLD, 11));
+		Username_label.setBounds(250, 100, 64, 14);
+		Login_panel.add(Username_label);
+		Username_textfield = new JTextField();
+		Username_textfield.setBounds(325, 96, 123, 20);
+		Username_textfield.setColumns(10);
+		Login_panel.add(Username_textfield);
+		
+		JLabel Password_label = new JLabel("Password");
+		Password_label.setFont(new Font("Microsoft New Tai Lue", Font.BOLD, 11));
+		Password_label.setBounds(250, 156, 63, 14);
+		Password_label.setVerticalAlignment(SwingConstants.BOTTOM);
+		Login_panel.add(Password_label);
+		
+		Password_textfield = new JPasswordField();
+		Password_textfield.setColumns(10);
+		Password_textfield.setBounds(325, 151, 123, 20);
+		
+		Login_panel.add(Password_textfield);
+		JLabel Newname_label = new JLabel("Name:");
+		Newname_label.setFont(new Font("Microsoft New Tai Lue", Font.BOLD, 11));
+		Newname_label.setBounds(250, 88, 59, 14);
+		Newuser_panel.add(Newname_label);
+		Newname_textfield = new JTextField();
+		Newname_textfield.setBounds(325, 84, 136, 20);
+		Newuser_panel.add(Newname_textfield);
+		Newname_textfield.setColumns(10);
+		
+		JLabel Newusername_label = new JLabel("Username:");
+		Newusername_label.setFont(new Font("Microsoft New Tai Lue", Font.BOLD, 11));
+		Newusername_label.setBounds(250, 148, 78, 14);
+		Newuser_panel.add(Newusername_label);
+		Newusername_textfield = new JTextField();
+		Newusername_textfield.setColumns(10);
+		Newusername_textfield.setBounds(325, 144, 136, 20);
+		Newuser_panel.add(Newusername_textfield);
+		
+		JLabel Newpassword_label = new JLabel("Password:");
+		Newpassword_label.setFont(new Font("Microsoft New Tai Lue", Font.BOLD, 11));
+		Newpassword_label.setBounds(250, 179, 78, 14);
+		Newuser_panel.add(Newpassword_label);
+		Newpassword_textfield = new JPasswordField();
+		Newpassword_textfield.setColumns(10);
+		Newpassword_textfield.setBounds(325, 175, 136, 20);
+		Newuser_panel.add(Newpassword_textfield);
+		
+		JLabel lblLogin = new JLabel("LOGIN");
+		lblLogin.setHorizontalAlignment(SwingConstants.LEFT);
+		lblLogin.setFont(new Font("Microsoft New Tai Lue", Font.PLAIN, 25));
+		lblLogin.setBounds(250, 20, 123, 35);
+		Login_panel.add(lblLogin);
+		
+		JLabel lblNewUser = new JLabel("New user");
+		lblNewUser.setFont(new Font("Microsoft New Tai Lue", Font.PLAIN, 25));
+		lblNewUser.setBounds(250, 20, 149, 35);
+		Newuser_panel.add(lblNewUser);	
+		
+		JLabel lblPleaseFillIn = new JLabel("Please fill in all the fields, your username and password should have at least five characters");
+		lblPleaseFillIn.setForeground(Color.RED);
+		lblPleaseFillIn.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblPleaseFillIn.setBounds(114, 270, 550, 14);
+		Newuser_panel.add(lblPleaseFillIn);
+	}
+	protected void Excelsearch() {
+		// TODO Auto-generated method stub
+		
+	}
+	protected void hoi() {
+		// TODO Auto-generated method stub
+		
+	}
+}
